@@ -1,0 +1,19 @@
+export const config = { api: { bodyParser: false } };
+
+export default async function handler(req, res) {
+  if (req.method !== "POST") return res.status(405).send("Method Not Allowed");
+
+  let body = "";
+  await new Promise((resolve) => {
+    req.on("data", (chunk) => (body += chunk));
+    req.on("end", resolve);
+  });
+
+  try {
+    console.log("POSaBIT webhook:", JSON.parse(body));
+  } catch {
+    console.log("POSaBIT webhook (raw):", body);
+  }
+
+  return res.status(200).json({ ok: true });
+}
